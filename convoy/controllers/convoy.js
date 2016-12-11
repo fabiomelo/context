@@ -16,7 +16,7 @@ function showError (err) {
 }
 
 function createUpdatePositionMessage(token, latitude, longitude, speed, isEmergency,
-isProgrammedStop ){
+isProgrammedStop){
   var message = {
       to: token, // required fill with device token or topics
       priority: "high",
@@ -29,7 +29,6 @@ isProgrammedStop ){
       }
   };
 
-  console.log(message);
   return message;
 }
 
@@ -40,24 +39,23 @@ module.exports = function(app) {
       register: function(request, response) {
 
         //Add itens to array if it does not exist
-        if (deviceTokenList.indexOf(request.query.id) === -1) {
-          console.log('Registering... ' +request.query.id);
-          deviceTokenList.push(request.query.id);
-          messages.jsonMessageSuccessful(response, request.query.id);
+        if (deviceTokenList.indexOf(request.query.token) === -1) {
+          console.log('Registering... ' +request.query.token);
+          deviceTokenList.push(request.query.token);
+          messages.jsonMessageSuccessful(response, request.query.token);
         } else{
           messages.jsonMessageConflict(response)
         } 
       },
       updatePosition: function(request, response){
         console.log("Updating position...");
-        var deviceid = "eU6HKx7QRMc:APA91bEIoJtHmTFz_MzUgbMkoZvwdlXzrMDbCB1via_fV16MRF_Xc0C0KkkVA1diR8QgzRdQtkCy-6JDd5it_NSaiIbIlBDDi0g2GFkmrE4ESMi43dBODBePQrzFLqiKeDmX26DkXB8i";
-        //request.query.id;
-
+        var token = request.query.token;
         console.log(request.body);
 
         //for(int i = 0;deviceTokenList.length; i++){
 
-            var message = createUpdatePositionMessage(deviceid,request.body.latitude,request.body.longitude,request.body.speed,request.body.isEmergency,request.body.isProgrammedStop);
+            var message = createUpdatePositionMessage(token,request.body.latitude,request.body.longitude,request.body.speed,request.body.isEmergency,request.body.isProgrammedStop);
+            console.log(message);
             //callback style
             fcm.send(message, function(err, response){
                 if (err) {
