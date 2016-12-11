@@ -15,10 +15,10 @@ function showError (err) {
   }
 }
 
-function createUpdatePositionMessage(token, latitude, longitude, speed, isEmergency,
+function createUpdatePositionMessage(tokens, latitude, longitude, speed, isEmergency,
 isProgrammedStop){
   var message = {
-      to: token, // required fill with device token or topics
+      registration_ids: tokens, // required fill with device token or topics
       priority: "high",
       data: {
         'latitude':  latitude,
@@ -50,25 +50,23 @@ module.exports = function(app) {
       updatePosition: function(request, response){
         console.log("Updating position...");
         var token = request.query.token;
-        console.log(request.body);
+        //console.log(request.body)
 
-        //for(int i = 0;deviceTokenList.length; i++){
+        var message = createUpdatePositionMessage(deviceTokenList,request.body.latitude,request.body.longitude,request.body.speed,request.body.isEmergency,request.body.isProgrammedStop);
+        //console.log(message);
+        //callback style
+        fcm.send(message, function(err, response){
+            if (err) {
+                console.log("Something has gone wrong!");
 
-            var message = createUpdatePositionMessage(token,request.body.latitude,request.body.longitude,request.body.speed,request.body.isEmergency,request.body.isProgrammedStop);
-            console.log(message);
-            //callback style
-            fcm.send(message, function(err, response){
-                if (err) {
-                    console.log("Something has gone wrong!");
+                console.log(err);
+            } else {
+                console.log("Successfully sent with response: ", response);
+            }
+        });
 
-                    console.log(err);
-                } else {
-                    console.log("Successfully sent with response: ", response);
-                }
-            });
+        messages.jsonMessageInternalError(response, err);
 
-            messages.jsonMessageInternalError(response, err);
-        //}
       
       },
 
