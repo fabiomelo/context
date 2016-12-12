@@ -15,17 +15,19 @@ function showError (err) {
   }
 }
 
-function createUpdatePositionMessage(tokens, latitude, longitude, speed, isEmergency,
-isProgrammedStop){
+function createUpdatePositionMessage(tokens, carId, latitude, longitude, speed, isEmergency,
+isProgrammedStop, isLeader){
   var message = {
       registration_ids: tokens, // required fill with device token or topics
       priority: "high",
       data: {
+        'carId': carId,
         'latitude':  latitude,
         'longitude': longitude,
         'lastSpeed': speed,
         'isEmergency': isEmergency ,
-        'isProgrammedStop': isProgrammedStop 
+        'isProgrammedStop': isProgrammedStop,
+        'isLeader': isLeader
       }
   };
 
@@ -41,7 +43,9 @@ module.exports = function(app) {
         //Add itens to array if it does not exist
         if (deviceTokenList.indexOf(request.query.token) === -1) {
           console.log('Registering... ' +request.query.token);
+
           deviceTokenList.push(request.query.token);
+          console.log("registered tokens:" + deviceTokenList)
           messages.jsonMessageSuccessful(response, request.query.token);
         } else{
           messages.jsonMessageConflict(response)
@@ -52,8 +56,9 @@ module.exports = function(app) {
         var token = request.query.token;
         //console.log(request.body)
 
-        var message = createUpdatePositionMessage(deviceTokenList,request.body.latitude,request.body.longitude,request.body.speed,request.body.isEmergency,request.body.isProgrammedStop);
-        //console.log(message);
+        var message = createUpdatePositionMessage(deviceTokenList, token, request.body.latitude,request.body.longitude,request.body.speed,
+          request.body.isEmergency,request.body.isProgrammedStop, request.body.isLeader);
+        console.log(message);
         //callback style
         fcm.send(message, function(err, response){
             if (err) {
@@ -64,8 +69,6 @@ module.exports = function(app) {
                 console.log("Successfully sent with response: ", response);
             }
         });
-
-        messages.jsonMessageInternalError(response, err);
 
       
       },
