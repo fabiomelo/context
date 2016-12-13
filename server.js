@@ -1,7 +1,5 @@
 'use strict';
 
-var PORT = 8080;
-
 var express = require('express');
 var load = require('express-load');
 var bodyParser = require('body-parser');
@@ -42,7 +40,7 @@ load('controllers')
 
 app.use(error.notFound);
 app.use(error.serverError);
-
+var PORT = process.env.PORT || 8080;
 // start express server
 app.listen(PORT, function() {
     console.log('Express server listening on port %d in %s mode', PORT, 'development');
