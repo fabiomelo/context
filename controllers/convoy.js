@@ -65,8 +65,10 @@ module.exports = function(app) {
                 console.log("Something has gone wrong!");
 
                 console.log(err);
+                messages.jsonMessageInternalError(response, err);
             } else {
                 console.log("Successfully sent with response: ", response);
+                messages.jsonMessageSuccessful(response, request.query.token);
             }
         });
 
