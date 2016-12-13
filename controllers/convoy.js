@@ -85,6 +85,7 @@ module.exports = function(app) {
             'isLeader': request.body.isLeader
           }
         };
+         console.log(message);
          //callback style
         fcm.send(message, function(err, response){
             if (err) {
