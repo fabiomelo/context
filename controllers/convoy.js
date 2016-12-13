@@ -74,6 +74,30 @@ module.exports = function(app) {
 
       
       },
+      emergencyStop: function(request, response){
+        console.log("emergencyStop..."); 
+        var message ={
+          registration_ids: tokens, // required fill with device token or topics
+          priority: "high",
+          data: {
+            'carId': request.query.token,
+            'isEmergency': request.body.isEmergency ,
+            'isLeader': request.body.isLeader
+          }
+        };
+         //callback style
+        fcm.send(message, function(err, response){
+            if (err) {
+                console.log("Something has gone wrong!");
+
+                console.log(err);
+                messages.jsonMessageInternalError(response, err);
+            } else {
+                console.log("Successfully sent with response: ", response);
+                messages.jsonMessageSuccessful(response, request.query.token);
+            }
+        });
+      }
 
        
 
