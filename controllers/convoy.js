@@ -81,11 +81,11 @@ module.exports = function(app) {
                 console.log(err);
                 //response.send(reponse);
                 //response os not defined =/
-                //messages.jsonMessageInternalError(response, err);
+                messages.jsonMessageInternalError(response, err);
             } else {
                 console.log("Successfully sent with response: ", response);
                 //response os not defined =/
-               // messages.jsonMessageSuccessful(response, request.query.token);
+                messages.jsonMessageSuccessful(response, request.query.token);
             }
         });
 
@@ -101,10 +101,10 @@ module.exports = function(app) {
                 console.log("Something has gone wrong!");
 
                 console.log(err);
-                //messages.jsonMessageInternalError(response, err);
+                messages.jsonMessageInternalError(response, err);
             } else {
                 console.log("Successfully sent with response: ", response);
-                //messages.jsonMessageSuccessful(response, request.query.token);
+                messages.jsonMessageSuccessful(response, request.query.token);
             }
         });
       },
