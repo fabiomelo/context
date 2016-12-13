@@ -98,7 +98,7 @@ module.exports = function(app) {
                 messages.jsonMessageSuccessful(response, request.query.token);
             }
         });
-      }
+      },
 
        
 
