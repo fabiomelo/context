@@ -15,18 +15,32 @@ function showError (err) {
   }
 }
 
-function createUpdatePositionMessage(tokens, carId, latitude, longitude, speed, isEmergency,
-isProgrammedStop, isLeader){
+function createUpdatePositionMessage(tokens, carId, latitude, longitude, speed, isEmergency, isProgrammedStop, isLeader){
   var message = {
-      registration_ids: tokens, // required fill with device token or topics
-      priority: "high",
-      data: {
+      "registration_ids": tokens, // required fill with device token or topics
+      "priority": "high",
+      "data": {
+        "carId": carId,
+        "latitude":  latitude,
+        "longitude": longitude,
+        "lastSpeed": speed,
+        "isEmergency": isEmergency ,
+        "isProgrammedStop": isProgrammedStop,
+        "isLeader": isLeader
+      }
+  };
+
+  return message;
+}
+
+
+function createEmergencyMessage(tokens, carId, isEmergency, isLeader){
+  var message = {
+      "registration_ids": tokens, // required fill with device token or topics
+      "priority": "high",
+      "data": {
         'carId': carId,
-        'latitude':  latitude,
-        'longitude': longitude,
-        'lastSpeed': speed,
-        'isEmergency': isEmergency ,
-        'isProgrammedStop': isProgrammedStop,
+        'isEmergency': isEmergency,
         'isLeader': isLeader
       }
   };
@@ -48,7 +62,7 @@ module.exports = function(app) {
           console.log("registered tokens:" + deviceTokenList)
           messages.jsonMessageSuccessful(response, request.query.token);
         } else{
-          messages.jsonMessageConflict(response)
+          //messages.jsonMessageConflict(response)
         } 
       },
       updatePosition: function(request, response){
@@ -65,10 +79,12 @@ module.exports = function(app) {
                 console.log("Something has gone wrong!");
 
                 console.log(err);
-                messages.jsonMessageInternalError(response, err);
+                response.send(reponse);
+                //messages.jsonMessageInternalError(response, err);
             } else {
                 console.log("Successfully sent with response: ", response);
-                messages.jsonMessageSuccessful(response, request.query.token);
+                response.send(reponse);
+               // messages.jsonMessageSuccessful(response, request.query.token);
             }
         });
 
@@ -76,26 +92,18 @@ module.exports = function(app) {
       },
       emergencyStop: function(request, response){
         console.log("emergencyStop..."); 
-        var message ={
-          registration_ids: tokens, // required fill with device token or topics
-          priority: "high",
-          data: {
-            'carId': request.query.token,
-            'isEmergency': request.body.isEmergency ,
-            'isLeader': request.body.isLeader
-          }
-        };
-         console.log(message);
+        var message = createEmergencyMessage(deviceTokenList, request.query.token, request.body.isEmergency , request.body.isLeader );
+        console.log("#####"+message);
          //callback style
         fcm.send(message, function(err, response){
             if (err) {
                 console.log("Something has gone wrong!");
 
                 console.log(err);
-                messages.jsonMessageInternalError(response, err);
+                //messages.jsonMessageInternalError(response, err);
             } else {
                 console.log("Successfully sent with response: ", response);
-                messages.jsonMessageSuccessful(response, request.query.token);
+                //messages.jsonMessageSuccessful(response, request.query.token);
             }
         });
       },
