@@ -5,7 +5,10 @@
   "engines": {
     "node": "6.9.2",
     "npm": "3.10.9"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "body-parser": "^1.9.2",
     "connect-busboy": "*",
